@@ -166,6 +166,7 @@ lcMeshLoaderSection* lcMeshLoaderTypeData::AddSection(lcMeshPrimitiveType Primit
 
 quint32 lcMeshLoaderTypeData::AddVertex(const lcVector3& Position, bool Optimize)
 {
+	//printf("AddVertex1 mVertices.GetSize(): %i addr.: [%p]\n", mVertices.GetSize(),mVertices);
 	if (Optimize)
 	{
 		for (int VertexIdx = mVertices.GetSize() - 1; VertexIdx >= 0; VertexIdx--)
@@ -188,6 +189,7 @@ quint32 lcMeshLoaderTypeData::AddVertex(const lcVector3& Position, bool Optimize
 
 quint32 lcMeshLoaderTypeData::AddVertex(const lcVector3& Position, const lcVector3& Normal, float NormalWeight, bool Optimize)
 {
+	//printf("AddVertex2 mVertices.GetSize(): %i addr.: [%p]\n", mVertices.GetSize(),mVertices);
 	if (Optimize)
 	{
 		for (int VertexIdx = mVertices.GetSize() - 1; VertexIdx >= 0; VertexIdx--)

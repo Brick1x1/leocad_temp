@@ -154,8 +154,15 @@ void MinifigWizard::ParseSettings(lcFile& Settings)
 			NameEnd++;
 
 			PieceInfo* Info = lcGetPiecesLibrary()->FindPiece(NameStart, nullptr, false, false);
+
+			if(!Info) {
+				printf("SectionIndex: %i, Name: %s, description: %s\n",SectionIndex, NameStart, DescriptionStart);
+			}
+
 			if (!Info && *NameStart)
 				continue;
+			
+
 
 			float Mat[12];
 			int Flags;

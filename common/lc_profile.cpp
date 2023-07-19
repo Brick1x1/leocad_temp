@@ -5,6 +5,7 @@
 #include "lc_model.h"
 #include "project.h"
 #include "lc_viewsphere.h"
+#include <iostream>
 
 lcProfileEntry::lcProfileEntry(const char* Section, const char* Key, int DefaultValue)
 {
@@ -209,6 +210,9 @@ QByteArray lcGetProfileBuffer(LC_PROFILE_KEY Key)
 {
 	lcProfileEntry& Entry = gProfileEntries[Key];
 	QSettings Settings;
+
+	std::cout << "Entry.mSection: " << Entry.mSection << ", Entry.mKey: " << Entry.mKey << "\n";
+
 
 	return Settings.value(QString("%1/%2").arg(Entry.mSection, Entry.mKey)).toByteArray();
 }

@@ -80,6 +80,7 @@ class PieceInfo;
 typedef std::map<const PieceInfo*, std::map<int, int>> lcPartsList;
 struct lcModelPartsEntry;
 struct lcMinifig;
+//class TrainTrackSection;
 enum class lcViewpoint;
 enum class lcShadingMode;
 enum class lcStudStyle;

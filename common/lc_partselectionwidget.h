@@ -108,6 +108,7 @@ public:
 	void ToggleColorLocked();
 	void ToggleListMode();
 	void SetCategory(int CategoryIndex);
+	void SetParts(lcArray<PieceInfo*> partsList);
 	void SetModelsCategory();
 	void SetPaletteCategory(int SetIndex);
 	void SetCurrentModelCategory();
@@ -150,6 +151,7 @@ public:
 	void startDrag(Qt::DropActions SupportedActions) override;
 
 	void SetCategory(lcPartCategoryType Type, int Index);
+	void SetParts(lcArray<PieceInfo*> partsList);
 
 	PieceInfo* GetCurrentPart() const
 	{

@@ -15,9 +15,12 @@
 #include "pieceinf.h"
 #include "lc_view.h"
 #include "minifig.h"
+#include "traintracksystem.h"
+#include "lc_array.h"
 #include "lc_qarraydialog.h"
 #include "lc_qselectdialog.h"
 #include "lc_minifigdialog.h"
+#include "lc_traintracksystemdialog.h"
 #include "lc_qgroupdialog.h"
 #include "lc_qeditgroupsdialog.h"
 #include "lc_qpropertiesdialog.h"
@@ -25,6 +28,7 @@
 #include "lc_lxf.h"
 #include "lc_previewwidget.h"
 #include "lc_findreplacewidget.h"
+
 
 void lcModelProperties::LoadDefaults()
 {
@@ -2181,16 +2185,34 @@ void lcModel::AddPiece()
 
 void lcModel::AddPiece(lcPiece* Piece)
 {
-	for (int PieceIdx = 0; PieceIdx < mPieces.GetSize(); PieceIdx++)
-	{
-		if (mPieces[PieceIdx]->GetStepShow() > Piece->GetStepShow())
-		{
-			InsertPiece(Piece, PieceIdx);
-			return;
-		}
-	}
+	//printf("mPieces.GetSize(): %i, \n",mPieces.GetSize());
 
-	InsertPiece(Piece, mPieces.GetSize());
+	// When loading file, '0 STEP' line will increase step, so normally piece has to be inserted at the end when loading a file, and searching can be avoided.
+	if(mPieces.GetSize() > 0 && mPieces[mPieces.GetSize() - 1]->GetStepShow() == Piece->GetStepShow()) {
+		
+		//printf("piece add\n");
+		
+		//mPieces.Add(Piece);
+		InsertPiece(Piece, mPieces.GetSize());
+
+	}
+	else {
+
+		for (int PieceIdx = 0; PieceIdx < mPieces.GetSize(); PieceIdx++)
+		{
+			if (mPieces[PieceIdx]->GetStepShow() > Piece->GetStepShow())
+			{
+				//printf("piece inserted at index: %i\n",PieceIdx);
+				
+				InsertPiece(Piece, PieceIdx);
+				return;
+			}
+		}
+
+		InsertPiece(Piece, mPieces.GetSize());
+	
+	}
+	
 }
 
 void lcModel::InsertPiece(lcPiece* Piece, int Index)
@@ -4426,6 +4448,8 @@ void lcModel::ShowMinifigDialog()
 		if (Minifig.Parts[PartIdx] == nullptr)
 			continue;
 
+		//printf("Filename: %s\n",Minifig.Parts[PartIdx]->mFileName);
+
 		lcPiece* Piece = new lcPiece(Minifig.Parts[PartIdx]);
 
 		Piece->Initialize(Minifig.Matrices[PartIdx], mCurrentStep);
@@ -4464,6 +4488,55 @@ void lcModel::SetMinifig(const lcMinifig& Minifig)
 	}
 
 	SetSelectionAndFocus(Pieces, nullptr, 0, false);
+}
+
+/* code added - start */
+void lcModel::ShowTrainTrackSystemDialog()
+{
+	//std::cout << "Entering train track system wizard!\n";
+	lcTrainTrackSystemDialog Dialog(gMainWindow);
+
+	if (Dialog.exec() != QDialog::Accepted)
+		return;
+
+	gMainWindow->GetActiveView()->MakeCurrent();
+
+	lcGroup* Group = AddGroup(tr("TrainTrackSystem #"), nullptr);
+		
+	lcArray<lcPiece* > trackSystemPieces = Dialog.mTrainTrackSystem->GetPieces();
+	lcArray<lcObject*> focusPieces(trackSystemPieces.GetSize());
+
+	for (lcPiece* Piece : trackSystemPieces)
+	{				
+		Piece->SetGroup(Group);
+		AddPiece(Piece);
+		Piece->UpdatePosition(mCurrentStep);
+		focusPieces.Add(Piece);
+	}
+
+	SetSelectionAndFocus(focusPieces, nullptr, 0, false);
+	gMainWindow->UpdateTimeline(false, false);
+	SaveCheckpoint(tr("Train track system"));
+
+}
+
+/* code added - end */
+
+void lcModel::SetTrainTrackSystem(const lcArray<lcPiece* > Pieces)
+{
+	DeleteModel();
+
+	lcArray<lcObject*> PiecesSelection(Pieces.GetSize());
+
+	for (lcPiece* Piece : Pieces)
+	{				
+		AddPiece(Piece);
+		Piece->UpdatePosition(1);
+		PiecesSelection.Add(Piece);
+	}
+
+	//SetSelectionAndFocus(PiecesSelection, nullptr, 0, false);
+
 }
 
 void lcModel::SetPreviewPieceInfo(PieceInfo* Info, int ColorIndex)

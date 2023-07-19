@@ -223,6 +223,7 @@ public:
 	}
 
 	void SetMinifig(const lcMinifig& Minifig);
+	void SetTrainTrackSystem(const lcArray<lcPiece* > Pieces);
 	void SetPreviewPieceInfo(PieceInfo* Info, int ColorIndex);
 
 	void Cut();
@@ -346,6 +347,11 @@ public:
 	void ShowSelectByNameDialog();
 	void ShowArrayDialog();
 	void ShowMinifigDialog();
+
+	/* code added - start */
+	void ShowTrainTrackSystemDialog();
+	/* code added - end */
+	
 	void UpdateInterface();
 
 protected:

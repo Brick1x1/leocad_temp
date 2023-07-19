@@ -607,6 +607,153 @@ void lcPiece::DrawInterface(lcContext* Context, const lcScene& Scene) const
 		Context->DrawIndexedPrimitives(GL_LINES, 24, GL_UNSIGNED_SHORT, 0);
 	}
 
+	bool testPieceDrawInterface = true;
+	if(testPieceDrawInterface) {
+		
+
+
+		if (!strcmp(mPieceInfo->mFileName, "74747.dat")) {
+			printf("Test draw, piece name: %s\n",mPieceInfo->mFileName);
+
+		
+			/*float Verts[8 * 3];
+			float* CurVert = Verts;
+
+			*CurVert++ = -10; *CurVert++ = -20; *CurVert++ = -10;
+			*CurVert++ = -10; *CurVert++ =  10; *CurVert++ = -10;
+			*CurVert++ =  10; *CurVert++ =  10; *CurVert++ = -10;
+			*CurVert++ =  10; *CurVert++ = -20; *CurVert++ = -10;			
+			*CurVert++ = -10; *CurVert++ = -20; *CurVert++ =  10;
+			*CurVert++ = -10; *CurVert++ =  10; *CurVert++ =  10;
+			*CurVert++ =  10; *CurVert++ =  10; *CurVert++ =  10;
+			*CurVert++ =  10; *CurVert++ = -20; *CurVert++ =  10;
+
+			const GLushort Indices[36] =
+			{
+				0, 1, 2,  0, 2, 3,  3, 2, 6,  3, 6, 7,  7, 6, 4,  4, 6, 5,
+				4, 5, 0,  0, 5, 1,  0, 3, 4,  4, 3, 7,  1, 5, 2,  2, 5, 6
+			};*/
+
+
+			float Verts[14 * 3];
+			float* CurVert = Verts;
+
+			*CurVert++ =   0; *CurVert++ =   0; *CurVert++ =   5;
+			*CurVert++ = -40; *CurVert++ =  40; *CurVert++ =   5;
+			*CurVert++ = -40; *CurVert++ =  20; *CurVert++ =   5;
+			*CurVert++ = -80; *CurVert++ =  20; *CurVert++ =   5;
+			*CurVert++ = -80; *CurVert++ = -20; *CurVert++ =   5;
+			*CurVert++ = -40; *CurVert++ = -20; *CurVert++ =   5;
+			*CurVert++ = -40; *CurVert++ = -40; *CurVert++ =   5;
+
+			*CurVert++ =   0; *CurVert++ =   0; *CurVert++ =  -5;
+			*CurVert++ = -40; *CurVert++ =  40; *CurVert++ =  -5;
+			*CurVert++ = -40; *CurVert++ =  20; *CurVert++ =  -5;
+			*CurVert++ = -80; *CurVert++ =  20; *CurVert++ =  -5;
+			*CurVert++ = -80; *CurVert++ = -20; *CurVert++ =  -5;
+			*CurVert++ = -40; *CurVert++ = -20; *CurVert++ =  -5;
+			*CurVert++ = -40; *CurVert++ = -40; *CurVert++ =  -5;
+
+
+			const GLushort Indices[60] =
+			{
+				 3,  4,  5,    3,  5,  2,    1,  6,  0,
+				10, 12, 11,   10,  9, 12,    8,  7, 13,
+				 0,  7,  8,    0,  8,  1,
+				 1,  8,  9,    1,  9,  2,
+				 2,  9, 10,   2, 10,  3,
+				 3, 10, 11,   3, 11,  4,
+				 4, 11, 12,   4, 12,  5,
+				 5, 12, 13,   5, 13,  6,
+				 6, 13,  7,   6,  7,  0
+			};
+
+
+			Context->EnableColorBlend(true);
+			Context->EnableCullFace(true);
+
+			const lcVector4 ControlPointColor = lcVector4FromColor(Preferences.mControlPointColor);
+			const lcMatrix44 WorldMatrix = Scene.ApplyActiveSubmodelTransform(mModelWorld);
+
+
+			//new TrainTrackConnectionPoint(0,160,0)
+
+
+			lcMatrix44 currentLocation;
+			lcMatrix44 mat44;
+			lcMatrix44 matOffset;
+
+			// calculate position on exiting connection point
+			/*mat44 = lcMatrix44Identity();
+			mat44 =	lcMatrix44RotationZ(LC_DTOR * 0);
+
+			matOffset = lcMatrix44Identity();
+			matOffset.SetTranslation(lcVector3(160,0,0)); 
+
+			matOffset = lcMul(mat44, matOffset);*/
+
+
+			// calculate position on exiting connection point
+			float xHalfBendOff = sin(LC_DTOR * 11.25) * 800;
+			float yHalfBendOff = ((cos(LC_DTOR * 11.25) * 800) - 800);
+
+			mat44 = lcMatrix44Identity();
+			mat44 =	lcMatrix44RotationZ(LC_DTOR * -11.25);
+
+			matOffset = lcMatrix44Identity();
+			matOffset.SetTranslation(lcVector3(xHalfBendOff,yHalfBendOff,11)); 
+
+			matOffset = lcMul(mat44, matOffset);
+
+			/*****/
+
+
+			currentLocation = lcMul(matOffset,WorldMatrix);
+
+
+
+
+
+			Context->SetWorldMatrix(currentLocation);
+
+
+			Context->SetVertexBufferPointer(Verts);
+			Context->SetVertexFormatPosition(3);
+			Context->SetIndexBufferPointer(Indices);
+
+			Context->SetColor(ControlPointColor);
+
+			Context->DrawIndexedPrimitives(GL_TRIANGLES, 60, GL_UNSIGNED_SHORT, 0);
+
+			/*****/
+
+
+			mat44 = lcMatrix44Identity();
+			mat44 =	lcMatrix44RotationZ(LC_DTOR * -168.75);
+
+			matOffset = lcMatrix44Identity();
+			matOffset.SetTranslation(lcVector3(-xHalfBendOff,yHalfBendOff,11)); 
+
+			matOffset = lcMul(mat44, matOffset);
+
+			currentLocation = lcMul(matOffset,WorldMatrix);
+			
+			Context->SetWorldMatrix(currentLocation);
+			
+			Context->DrawIndexedPrimitives(GL_TRIANGLES, 60, GL_UNSIGNED_SHORT, 0);
+
+			/*****/
+
+
+			Context->EnableCullFace(false);
+			Context->EnableColorBlend(false);
+
+		
+		}
+
+	}	
+
+
 	if (!mControlPoints.IsEmpty() && AreControlPointsVisible())
 	{
 		float Verts[8 * 3];

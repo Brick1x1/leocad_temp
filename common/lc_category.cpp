@@ -2,6 +2,7 @@
 #include "lc_category.h"
 #include "lc_file.h"
 #include "lc_profile.h"
+#include <iostream>
 
 std::vector<lcLibraryCategory> gCategories;
 
@@ -16,8 +17,12 @@ void lcLoadDefaultCategories(bool BuiltInLibrary)
 {
 	QByteArray Buffer = lcGetProfileBuffer(LC_PROFILE_CATEGORIES);
 
-	if (Buffer.isEmpty() || !lcLoadCategories(Buffer, gCategories))
+	std::cout << "Buffer: " << Buffer.toStdString() << "\n";
+
+	if (Buffer.isEmpty() || !lcLoadCategories(Buffer, gCategories)) {
+		std::cout << "Load default categories\n";
 		lcResetCategories(gCategories, BuiltInLibrary);
+	}
 }
 
 void lcSaveDefaultCategories()
@@ -118,6 +123,8 @@ bool lcLoadCategories(const QByteArray& Buffer, std::vector<lcLibraryCategory>& 
 
 		Category.Name = Name;
 		Category.Keywords = Keywords.toLatin1();
+
+		std::cout << "Keywords.toLatin1(): " << Keywords.toLatin1().toStdString()  << "\n";
 
 		Categories.emplace_back(std::move(Category));
 	}

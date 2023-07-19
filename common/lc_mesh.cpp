@@ -70,6 +70,8 @@ void lcMesh::Create(quint16(&NumSections)[LC_NUM_MESH_LODS], int VertexCount, in
 
 void lcMesh::CreateBox()
 {
+	printf("lcMest::CreateBox\n");
+	
 	quint16 NumSections[LC_NUM_MESH_LODS];
 	memset(NumSections, 0, sizeof(NumSections));
 	NumSections[LC_MESH_LOD_HIGH] = 2;

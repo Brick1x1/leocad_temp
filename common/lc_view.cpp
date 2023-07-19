@@ -88,6 +88,7 @@ void lcView::UpdateProjectViews(const Project* Project)
 
 void lcView::UpdateAllViews()
 {
+	printf("mViews size: %lu\n",mViews.size());
 	for (lcView* View : mViews)
 		View->Redraw();
 }
@@ -1115,6 +1116,7 @@ void lcView::DrawViewport() const
 
 void lcView::DrawAxes() const
 {
+	
 	const lcPreferences& Preferences = lcGetPreferences();
 
 	switch (mViewType)
@@ -1134,6 +1136,9 @@ void lcView::DrawAxes() const
 		case lcViewType::Count:
 			return;
 	}
+
+
+	
 
 //	mContext->ClearDepth();
 
@@ -1561,24 +1566,34 @@ void lcView::DrawGrid()
 	{
 		struct lcGridVertex
 		{
-			float x, y;
+			float x, y, z;
 			quint32 Color;
 		};
 
+		float MinZ = -2, MaxZ = 2;
+
 		const quint32 Red = LC_RGBA(204, 0, 0, 255);
 		const quint32 Green = LC_RGBA(0, 204, 0, 255);
+		const quint32 Blue = LC_RGBA(0, 0, 204, 255);
+		
+		//printf("MinY: %f, MaxY: %f , MinX: %f, MaxX: %f\n",(double)MinY,(double)MaxY,(double)MinX,(double)MaxX);
+
 		const float Scale = 20.0f * Spacing;
 
-		const lcGridVertex Verts[4] =
+		const lcGridVertex Verts[6] =
 		{
-			{ 0.0f, MinY * Scale, Green }, { 0.0f, MaxY * Scale, Green }, { MinX * Scale, 0.0f, Red }, { MaxX * Scale, 0.0f, Red }
+			{ 0.0f, MinY * Scale, 0.0f, Green }, { 0.0f, MaxY * Scale, 0.0f, Green }, { MinX * Scale, 0.0f, 0.0f, Red }, { MaxX * Scale, 0.0f, 0.0f, Red },
+			{ 0.0f, 0.0f, MinZ * Scale, Blue}, { 0.0f, 0.0f, MaxZ * Scale, Blue }
 		};
 
 		mContext->SetMaterial(lcMaterialType::UnlitVertexColor);
 		mContext->SetVertexBufferPointer(Verts);
-		mContext->SetVertexFormat(0, 2, 0, 0, 4, false);
 
-		mContext->DrawPrimitives(GL_LINES, 0, 4);
+		//mContext->SetVertexFormat(0, 2, 0, 0, 4, false);
+		mContext->SetVertexFormat(0, 3, 0, 0, 4, false);
+		//SetVertexFormat(int BufferOffset, int PositionSize, int NormalSize, int TexCoordSize, int ColorSize, bool EnableNormals)
+		
+		mContext->DrawPrimitives(GL_LINES, 0, 6);
 	}
 }
 

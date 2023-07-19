@@ -11,6 +11,7 @@
 #include "lc_mesh.h"
 #include "lc_profile.h"
 #include "lc_previewwidget.h"
+#include "pieceinf.h"
 
 lcViewWidget::lcViewWidget(QWidget* Parent, lcView* View)
 	: QOpenGLWidget(Parent), mView(View)
@@ -119,8 +120,10 @@ void lcViewWidget::keyReleaseEvent(QKeyEvent* KeyEvent)
 	QOpenGLWidget::keyReleaseEvent(KeyEvent);
 }
 
+
 void lcViewWidget::mousePressEvent(QMouseEvent* MouseEvent)
 {
+	
 	float DeviceScale = GetDeviceScale();
 
 	mView->SetMousePosition(MouseEvent->x() * DeviceScale, mView->GetHeight() - MouseEvent->y() * DeviceScale - 1);
@@ -128,10 +131,26 @@ void lcViewWidget::mousePressEvent(QMouseEvent* MouseEvent)
 
 	switch (MouseEvent->button())
 	{
-	case Qt::LeftButton:
+	case Qt::LeftButton: {
+
+		//Emit piece, if the button is pressed on a piece
+		lcObjectSection ObjectSection = mView->FindObjectUnderPointer(false, false);
+		lcObject* Object = ObjectSection.Object;
+
+		if (Object)
+		{
+			if (Object->IsPiece())
+			{
+				lcPiece* Piece = (lcPiece*)Object;
+				emit mousePressOnPiece(Piece);		
+			}
+		}
+
+		printf("Mouse left button press event (lcViewWidget::mousePressEvent)\n");
 		mView->OnLeftButtonDown();
 		break;
 
+	}
 	case Qt::MiddleButton:
 		mView->OnMiddleButtonDown();
 		break;
@@ -155,6 +174,11 @@ void lcViewWidget::mousePressEvent(QMouseEvent* MouseEvent)
 
 void lcViewWidget::mouseReleaseEvent(QMouseEvent* MouseEvent)
 {
+
+	printf("Mouse release event\n");
+	emit mouseRelease();
+
+
 	float DeviceScale = GetDeviceScale();
 
 	mView->SetMousePosition(MouseEvent->x() * DeviceScale, mView->GetHeight() - MouseEvent->y() * DeviceScale - 1);
@@ -275,8 +299,32 @@ void lcViewWidget::dragEnterEvent(QDragEnterEvent* DragEnterEvent)
 {
 	const QMimeData* MimeData = DragEnterEvent->mimeData();
 
+	
+
+	/* test */	
+	printf("Drag enter event\n");
+	/* test end */
+
+
 	if (MimeData->hasFormat("application/vnd.leocad-part"))
-	{
+	{	
+
+		/* test */
+		QByteArray ItemData = MimeData->data("application/vnd.leocad-part");
+		QDataStream DataStream(&ItemData, QIODevice::ReadOnly);
+		QString filename;
+		DataStream >> filename;
+		printf("MimeData->data: %s\n",filename.toStdString().c_str());
+
+		lcPiecesLibrary* Library = lcGetPiecesLibrary();		
+		PieceInfo* pieceInfo = Library->FindPiece(filename.toStdString().c_str(), nullptr, false, false);
+
+		gMainWindow->SetCurrentPieceInfo(pieceInfo);
+
+		printf("Current piece info: %s\n", gMainWindow->GetCurrentPieceInfo()->mFileName);
+		/* test end */
+
+
 		DragEnterEvent->acceptProposedAction();
 		mView->BeginDrag(lcDragState::Piece);
 		return;
@@ -323,6 +371,8 @@ void lcViewWidget::dropEvent(QDropEvent* DropEvent)
 
 	if (MimeData->hasFormat("application/vnd.leocad-part") || MimeData->hasFormat("application/vnd.leocad-color"))
 	{
+		printf("Drop accepted\n");
+
 		mView->EndDrag(true);
 		setFocus(Qt::MouseFocusReason);
 

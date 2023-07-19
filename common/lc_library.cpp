@@ -131,6 +131,7 @@ void lcPiecesLibrary::RenamePiece(PieceInfo* Info, const char* NewName)
 
 PieceInfo* lcPiecesLibrary::FindPiece(const char* PieceName, Project* CurrentProject, bool CreatePlaceholder, bool SearchProjectFolder)
 {
+	//printf("lcPiecesLibrary::FindPiece\n");
 	QString ProjectPath;
 	if (SearchProjectFolder)
 	{

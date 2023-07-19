@@ -171,6 +171,7 @@ SOURCES += \
 	common/piece.cpp \
 	common/object.cpp \
 	common/minifig.cpp \
+	common/traintracksystem.cpp \
 	common/light.cpp \
 	common/lc_application.cpp \
 	common/lc_bricklink.cpp \
@@ -192,6 +193,7 @@ SOURCES += \
 	common/lc_mesh.cpp \
 	common/lc_meshloader.cpp \
 	common/lc_minifigdialog.cpp \
+	common/lc_traintracksystemdialog.cpp \
 	common/lc_model.cpp \
 	common/lc_pagesetupdialog.cpp \
 	common/lc_partselectionwidget.cpp \
@@ -239,6 +241,7 @@ HEADERS += \
 	common/piece.h \
 	common/object.h \
 	common/minifig.h \
+	common/traintracksystem.h \
 	common/light.h \
 	common/lc_application.h \
 	common/lc_array.h \
@@ -263,6 +266,7 @@ HEADERS += \
 	common/lc_mesh.h \
 	common/lc_meshloader.h \
 	common/lc_minifigdialog.h \
+	common/lc_traintracksystemdialog.h \
 	common/lc_model.h \
 	common/lc_pagesetupdialog.h \
 	common/lc_previewwidget.h \
@@ -317,6 +321,7 @@ FORMS += \
 	qt/lc_renderdialog.ui \
 	qt/lc_setsdatabasedialog.ui \
 	common/lc_minifigdialog.ui \
+	common/lc_traintracksystemdialog.ui \
 	common/lc_pagesetupdialog.ui \
 	common/lc_partpalettedialog.ui
 OTHER_FILES +=

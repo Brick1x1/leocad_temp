@@ -168,6 +168,52 @@ void lcPartSelectionListModel::SetCategory(int CategoryIndex)
 	SetFilter(mFilter);
 }
 
+void lcPartSelectionListModel::SetParts(lcArray<PieceInfo*> partsList)
+{
+	ClearRequests();
+
+	beginResetModel();
+
+	/*lcPiecesLibrary* Library = lcGetPiecesLibrary();
+	lcArray<PieceInfo*> SingleParts, GroupedParts;
+
+	if (CategoryIndex != -1)
+		Library->GetCategoryEntries(CategoryIndex, false, SingleParts, GroupedParts);
+	else
+	{
+		Library->GetParts(SingleParts);
+
+		lcModel* ActiveModel = gMainWindow->GetActiveModel();
+
+		for (int PartIdx = 0; PartIdx < SingleParts.GetSize(); )
+		{
+			PieceInfo* Info = SingleParts[PartIdx];
+
+			if (!Info->IsModel() || !Info->GetModel()->IncludesModel(ActiveModel))
+				PartIdx++;
+			else
+				SingleParts.RemoveIndex(PartIdx);
+		}
+	}
+
+	auto lcPartSortFunc=[](const PieceInfo* a, const PieceInfo* b)
+	{
+		return strcmp(a->m_strDescription, b->m_strDescription) < 0;
+	};
+
+	std::sort(SingleParts.begin(), SingleParts.end(), lcPartSortFunc);
+	*/
+
+	mParts.resize(partsList.GetSize());
+
+	for (int PartIdx = 0; PartIdx < partsList.GetSize(); PartIdx++)
+		mParts[PartIdx] = std::pair<PieceInfo*, QPixmap>(partsList[PartIdx], QPixmap());
+
+	endResetModel();
+
+	SetFilter(mFilter);
+}
+
 void lcPartSelectionListModel::SetModelsCategory()
 {
 	ClearRequests();
@@ -599,6 +645,16 @@ void lcPartSelectionListView::SetCategory(lcPartCategoryType Type, int Index)
 	setCurrentIndex(mListModel->index(0, 0));
 }
 
+void lcPartSelectionListView::SetParts(lcArray<PieceInfo*> partsList) {
+
+	mListModel->SetParts(partsList);
+		
+	if(mListModel->rowCount()>0)
+		setCurrentIndex(mListModel->index(0, 0));
+	
+}
+
+
 void lcPartSelectionListView::SetNoIcons()
 {
 	SetIconSize(0);
@@ -683,6 +739,8 @@ void lcPartSelectionListView::startDrag(Qt::DropActions SupportedActions)
 	Q_UNUSED(SupportedActions);
 
 	PieceInfo* Info = GetCurrentPart();
+
+	printf("startDrag GetCurrentPart Info->mFileName: %s\n",Info->mFileName);
 
 	if (!Info)
 		return;

@@ -1,3 +1,5 @@
+#include "piece.h"
+
 #pragma once
 
 class lcViewWidget : public QOpenGLWidget
@@ -12,6 +14,10 @@ public:
 	void SetView(lcView* View);
 
 	QSize sizeHint() const override;
+
+signals:
+	void mousePressOnPiece(lcPiece* piece);
+	void mouseRelease();
 
 protected:
 	float GetDeviceScale() const

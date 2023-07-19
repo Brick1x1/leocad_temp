@@ -151,6 +151,8 @@ int main(int argc, char *argv[])
 	QString Language = lcGetProfileString(LC_PROFILE_LANGUAGE);
 	QLocale Locale;
 
+	
+
 	if (!Language.isEmpty())
 		Locale = QLocale(Language);
 
